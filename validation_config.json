@@ -3,6 +3,5 @@
 	"outpath": "/aloy/home/ymartins/match_clinical_trial/experiments/validation/",
 	"config_hpc": "/aloy/home/ymartins/match_clinical_trial/config_hpc.json",
 	"path_prediction_result": "/aloy/home/ymartins/match_clinical_trial/experiments/biobert_trial/biobert-original-hypersearch-biobert-base-cased-v1.2-finetuned-ner/prediction/",
-	"path_prediction_input": "/aloy/home/ymartins/match_clinical_trial/experiments/validation/input_prediction/",
 	"cutoff_consensus": 0.8
 }
