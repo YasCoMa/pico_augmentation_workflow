@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import time
 import pandas as pd
 from tqdm import tqdm
 from Bio import Entrez
@@ -158,6 +159,7 @@ class ProcessPubmed:
                 pass
             k += interval
             c+=1
+            time.sleep(0.5)
 
         self.logger.info("[Process PubMed step] Task (Getting abstracts of articles associated to NCT raw info) ended -----------")
             
