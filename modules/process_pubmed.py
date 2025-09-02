@@ -1,5 +1,6 @@
 import os
 import re
+import json
 import pandas as pd
 from tqdm import tqdm
 from Bio import Entrez
