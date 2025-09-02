@@ -66,11 +66,18 @@ class ExperimentValidationBySimilarity:
             raise Exception("Mandatory fields not found in config. file")
     
     def _setup_out_folders(self):
+        self.ctout = os.path.join( self.outDir, 'process_ct' )
+
         self.out = os.path.join( self.outDir, 'validation' )
         if( not os.path.isdir( self.out ) ) :
             os.makedirs( self.out )
+
+        self.ctDir = os.path.join( self.out, 'clinical_trials' )
+
+        self.processedCTDir = os.path.join( self.out, 'processed_cts' )
+        if( not os.path.isdir( self.processedCTDir ) ) :
+            os.makedirs( self.processedCTDir )
         
-        self.processedCTDir = os.path.join( self.outDir, 'process_ct', 'processed_cts' )
         self.predInDir = os.path.join( self.outDir, 'input_prediction' )
         
         self.augdsDir = os.path.join( self.outDir, 'augmented_data' )

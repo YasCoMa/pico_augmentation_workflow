@@ -61,6 +61,8 @@ class ProcessPubmed:
             raise Exception("Mandatory fields not found in config. file")
     
     def _setup_out_folders(self):
+        self.ctout = os.path.join( self.outDir, 'process_ct' )
+
         self.out = os.path.join( self.outDir, 'process_pubmed' )
         if( not os.path.isdir( self.out ) ) :
             os.makedirs( self.out )
@@ -128,7 +130,7 @@ class ProcessPubmed:
             fm.write("pmid\tlabel\tpublication_type\ttext\n")
             fm.close()
     
-        inmap = os.path.join( self.out, 'complete_mapping_pubmed.tsv' )
+        inmap = os.path.join( self.ctout, 'complete_mapping_pubmed.tsv' )
         df = pd.read_csv( inmap, sep='\t')
         allids = set( [ str(id) for id in df['pmid'].unique() ] )
         ids = allids - gone

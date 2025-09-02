@@ -61,10 +61,6 @@ class InformationExtractionCT:
         self.ctDir = os.path.join( self.out, 'clinical_trials' )
         if( not os.path.isdir( self.ctDir ) ) :
             os.makedirs( self.ctDir )
-
-        self.processedCTDir = os.path.join( self.out, 'processed_cts' )
-        if( not os.path.isdir( self.processedCTDir ) ) :
-            os.makedirs( self.processedCTDir )
             
     def _get_clinical_trials(self):
         self.logger.info("[Process CT step] Task (Getting raw complete clinical trial from api) started -----------")
