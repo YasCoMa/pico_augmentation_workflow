@@ -58,6 +58,7 @@ class ExperimentValidationBySimilarity:
             if( 'cutoff_consensus' in self.config ):
                 self.cutoff_consensus = self.config['cutoff_consensus']
             
+            self.inPredDir = self.config["path_prediction_input"]
             self.outDir = self.config["outpath"]
             self.outPredDir = self.config["path_prediction_result"]
 
