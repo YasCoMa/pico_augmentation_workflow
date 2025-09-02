@@ -199,7 +199,6 @@ class ProcessPubmed:
         self._mark_as_done()
         
 if( __name__ == "__main__" ):
-    odir = './out'
-    i = ProcessPubmed( odir, predDir='/aloy/home/ymartins/match_clinical_trial/experiments/new_data/' )
+    i = ProcessPubmed()
     i.run()
 

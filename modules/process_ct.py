@@ -10,7 +10,7 @@ import logging
 import argparse
 
 class InformationExtractionCT:
-    def __init__(self, outdir):
+    def __init__(self):
         self.stopwords = ["other", "key", "inclusion criteria", "exclusion criteria", "not specified", "see disease characteristics"]
         
         self.logger = logging.getLogger(__name__)
@@ -166,5 +166,5 @@ class InformationExtractionCT:
         
 if( __name__ == "__main__" ):
     odir = './out'
-    i = InformationExtractionCT( odir )
+    i = InformationExtractionCT( )
     i.run()

@@ -14,7 +14,6 @@ import argparse
 
 class ExperimentValidationBySimilarity:
     def __init__(self):
-        
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(filename='log_validation.log', level=logging.INFO)
         
@@ -813,3 +812,7 @@ class ExperimentValidationBySimilarity:
         self._create_annotation_txt_per_section(label)
 
         self._mark_as_done()
+        
+if( __name__ == "__main__" ):
+    i = ExperimentValidationBySimilarity()
+    i.run()
