@@ -205,5 +205,6 @@ class ProcessPubmed:
         
 if( __name__ == "__main__" ):
     i = ProcessPubmed()
-    i.run()
+    if( not i.ready ):
+        i.run()
 

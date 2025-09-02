@@ -155,12 +155,13 @@ class InformationExtractionCT:
         self.logger.info("----------- Process CT ended -----------")
     
     def run(self):
-        #self._get_clinical_trials()
-        #self._make_mapping_ct_pubmed()
-        #self._parse_ct_raw()
+        self._get_clinical_trials()
+        self._make_mapping_ct_pubmed()
+        self._parse_ct_raw()
         self._mark_as_done()
         
 if( __name__ == "__main__" ):
     odir = './out'
     i = InformationExtractionCT( )
-    i.run()
+    if( not i.ready ):
+        i.run()

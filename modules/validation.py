@@ -823,4 +823,5 @@ class ExperimentValidationBySimilarity:
         
 if( __name__ == "__main__" ):
     i = ExperimentValidationBySimilarity()
-    i.run()
+    if( not i.ready ):
+        i.run()
