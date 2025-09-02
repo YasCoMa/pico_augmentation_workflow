@@ -58,8 +58,8 @@ class ExperimentValidationBySimilarity:
             if( 'cutoff_consensus' in self.config ):
                 self.cutoff_consensus = self.config['cutoff_consensus']
             
-            self.inPredDir = self.config["path_prediction_input"]
             self.outDir = self.config["outpath"]
+            self.predInDir = os.path.join( self.outDir, 'input_prediction' )
             self.outPredDir = self.config["path_prediction_result"]
 
             self.__setup_logdir( execdir )
@@ -90,12 +90,12 @@ class ExperimentValidationBySimilarity:
         opath = os.path.join( self.out, 'mapping_ct_pubmed.json' )
         if( not os.path.isfile(opath) ):
             ctids = set()
-            for f in tqdm( os.listdir( self.inPredDir ) ):
+            for f in tqdm( os.listdir( self.predInDir ) ):
                 if( f.endswith('.txt') ):
                     pmid = f.split('_')[0]
                     if( pmid not in mapp ):
                         mapp[pmid] = set()
-                    path = os.path.join( self.inPredDir, f)
+                    path = os.path.join( self.predInDir, f)
                     abs = open(path).read()
                     tokens = abs.split(' ')
                     ncts = list( filter( lambda x: (x.find('NCT0') != -1), tokens ))
@@ -784,7 +784,7 @@ class ExperimentValidationBySimilarity:
             cnt[outname] += 1
 
             # Check txt original file
-            inpath = os.path.join(self.inPredDir, f"{outname}.txt")
+            inpath = os.path.join(self.predInDir, f"{outname}.txt")
             outpath = os.path.join( folder_out, f'{outname}.txt')
             if( not os.path.isfile(outpath) or force_rewrite ):
                 if( not os.path.isfile(inpath) ):
