@@ -17,12 +17,6 @@ log.info """\
  mode       : ${params.mode}
  """
 
-params.help = false
-if (params.help) {
-    log.info params.help_message
-    exit 0
-}
-
 process setEnvironment {
     
     output:
