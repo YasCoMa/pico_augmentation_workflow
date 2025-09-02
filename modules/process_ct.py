@@ -244,7 +244,7 @@ class InformationExtractionCT:
             except:
                 pass
             
-            params = self._treat_eligibility(s)
+            params = self.__treat_eligibility(s)
             eligibility.update( params[0]+params[1] )
             inclusion = params[0]
             exclusion = params[1]
@@ -400,7 +400,7 @@ class InformationExtractionCT:
         
         return md
 
-    def _parse_ct_raw(self, ids):
+    def _parse_ct_raw(self ):
         self.logger.info("[Process CT step] Task (Parsing CT to extract target entity true values ) started -----------")
         
         for f in tqdm( os.listdir(self.ctDir) ):
@@ -408,7 +408,7 @@ class InformationExtractionCT:
                 path = os.path.join( self.ctDir, f )
                 dt = json.load( open( path, 'r' ) )
                 for s in dt:
-                    _ = self.__get_ct_info()
+                    _ = self.__get_ct_info(s)
 
         self.logger.info("[Process CT step] Task (Parsing CT to extract target entity true values ) ended -----------")
         
@@ -419,8 +419,8 @@ class InformationExtractionCT:
         self.logger.info("----------- Process CT ended -----------")
     
     def run(self):
-        self._get_clinical_trials()
-        self._make_mapping_ct_pubmed()
+        #self._get_clinical_trials()
+        #self._make_mapping_ct_pubmed()
         self._parse_ct_raw()
         self._mark_as_done()
         

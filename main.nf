@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 params.mode="preprocess"
-params.dataDir="/mnt/085dd464-7946-4395-acfd-e22026d52e9d/home/yasmmin/Dropbox/irbBCN_job/match_clinical_trial/experiments"
+params.dataDir="/aloy/home/ymartins/match_clinical_trial/validation_trials"
 
 params.help = false
 if (params.help) {
@@ -12,6 +12,7 @@ if (params.help) {
 log.info """\
  PICO Augmentation workflow  -  P I P E L I N E
  ===================================
+ dataDir       : ${params.dataDir}
  runningConfig : ${params.runningConfig}
  mode       : ${params.mode}
  """
@@ -77,7 +78,7 @@ process PROCESS_Validation {
 workflow {
     result = setEnvironment()
 
-    if( params.mode == "preprocess" ){
+    if( params.mode == "preprocess" | params.mode == "all" ){
         result = PROCESS_PreprocessCT( params.dataDir, params.runningConfig, result )
         result = PROCESS_PreprocessPubmed( params.dataDir, params.runningConfig, result )
     }
@@ -88,7 +89,7 @@ workflow {
 
 }
 
-// nextflow run -bg /aloy/home/ymartins/match_clinical_trial/ner_subproj/main.nf --dataDir /aloy/home/ymartins/match_clinical_trial/experiments/longformer/ --runningConfig /aloy/home/ymartins/match_clinical_trial/experiments/config_biobert.json --mode "all"
+// nextflow run -bg /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/main.nf --dataDir /aloy/home/ymartins/match_clinical_trial/validation_trials/ --runningConfig /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/validation_config.json --mode "all"
 
 workflow.onComplete {
     log.info ( workflow.success ? "\nDone! Models were trained and evaluated!\n" : "Oops .. something went wrong" )

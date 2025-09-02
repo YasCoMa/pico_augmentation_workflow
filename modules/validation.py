@@ -13,7 +13,7 @@ import logging
 import argparse
 
 class ExperimentValidationBySimilarity:
-	def __init__(self):
+    def __init__(self):
         
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(filename='log_validation.log', level=logging.INFO)
@@ -113,14 +113,14 @@ class ExperimentValidationBySimilarity:
         return mapp
 
     def __get_snippets_pred_labels(self, pmid):
-	    f = self.predictions_df[ self.predictions_df['pmid'] == pmid ]
-	    anns = []
-	    for i in f.index:
-	        label = str( self.predictions_df.loc[i, 'entity_group'])
-	        term = str( self.predictions_df.loc[i, 'word'])
-	        anns.append( [term, label] )
-	    
-	    return anns
+        f = self.predictions_df[ self.predictions_df['pmid'] == pmid ]
+        anns = []
+        for i in f.index:
+            label = str( self.predictions_df.loc[i, 'entity_group'])
+            term = str( self.predictions_df.loc[i, 'word'])
+            anns.append( [term, label] )
+        
+        return anns
     
     def _map_nctid_pmid_general(self, label_exp):
         mapp = self.__load_mapping_pmid_nctid()
@@ -206,7 +206,7 @@ class ExperimentValidationBySimilarity:
                 execAndCheck(cmdStr)
 
     def _manage_mapping(self, label):
-    	self.logger.info("[Validation step] Task (Mapping predictions to pmid and CT ) started -----------")
+        self.logger.info("[Validation step] Task (Mapping predictions to pmid and CT ) started -----------")
         
         if( not self.flag_parallel ):
             self._map_nctid_pmid_general(label)
@@ -384,24 +384,24 @@ class ExperimentValidationBySimilarity:
         return allids
 
     def _manage_prediction(self, label_exp):
-    	self.logger.info("[Validation step] Task (Obtaining predictions ) started -----------")
+        self.logger.info("[Validation step] Task (Obtaining predictions ) started -----------")
         
         widectids = self.__aggregate_nctids()
         ctlib, pathlib = self.__load_cts_library(widectids)
 
-    	f = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
-    	sourcect = os.path.join( self.out, f)
+        f = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
+        sourcect = os.path.join( self.out, f)
 
-    	if(flag_parallel):
-    		self._get_predictions_parallel(sourcect, ctlib, pathlib, f'{label_exp}', 'fast' )
-    	else:
-    		self._get_predictions(sourcect, ctlib, pathlib, f'{label_exp}', 'fast' )
+        if(flag_parallel):
+            self._get_predictions_parallel(sourcect, ctlib, pathlib, f'{label_exp}', 'fast' )
+        else:
+            self._get_predictions(sourcect, ctlib, pathlib, f'{label_exp}', 'fast' )
 
-    	self.logger.info("[Validation step] Task (Obtaining predictions ) ended -----------")
+        self.logger.info("[Validation step] Task (Obtaining predictions ) ended -----------")
         
     def __load_mapped_positions(self):
-    	path = os.path.join( self.outPredDir, "consensus_augmentation_models.tsv" )
-    	df = pd.read_csv( path, sep='\t' )
+        path = os.path.join( self.outPredDir, "consensus_augmentation_models.tsv" )
+        df = pd.read_csv( path, sep='\t' )
 
         mapped_positions = {}
         opath = os.path.join( self.out, "consensus_mapped.json")
@@ -412,7 +412,7 @@ class ExperimentValidationBySimilarity:
                 df = pd.read_csv(df, sep='\t')
 
             for i in df.index:
-            	ofile = df.loc[i, 'input_file'] 
+                ofile = df.loc[i, 'input_file'] 
                 pmid = df.loc[i, 'input_file'].split('_')[0]
                 entity = df.loc[i, 'entity_group']
                 word = df.loc[i, 'word']
@@ -431,11 +431,11 @@ class ExperimentValidationBySimilarity:
         return mapped_positions
 
     def _aggregate_report_add_info(self, label_result):
-    	self.logger.info("[Validation step] Task (Grouping predictions, ranking, and aggregating positional information ) started -----------")
+        self.logger.info("[Validation step] Task (Grouping predictions, ranking, and aggregating positional information ) started -----------")
         
         cutoff_consensus = self.cutoff_consensus
 
-    	mapped_positions = self.__load_mapped_positions()
+        mapped_positions = self.__load_mapped_positions()
 
         path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
         result_path = os.path.join( self.out, f'grouped_{label_result}_results_validation.tsv')
@@ -471,11 +471,11 @@ class ExperimentValidationBySimilarity:
             rdf.columns = ["input_file", "start", "end", "pmid", "entity", "word", "val", "stat_class"]
             result_path = os.path.join( self.out, f'grouped_{label_result}_results_validation.tsv')
             rdf.to_csv( result_path, sep='\t', index=None )
-        	
-        	rdf = rdf[ rdf['val'] >= cutoff_consensus ]
-        	rdf = rdf.sort_values( by = "val", ascending = False )
-	        result_path = os.path.join( self.out, f'top_grouped_{label_result}_results_validation.tsv')
-	        rdf.to_csv( result_path, sep='\t', index=None )
+            
+            rdf = rdf[ rdf['val'] >= cutoff_consensus ]
+            rdf = rdf.sort_values( by = "val", ascending = False )
+            result_path = os.path.join( self.out, f'top_grouped_{label_result}_results_validation.tsv')
+            rdf.to_csv( result_path, sep='\t', index=None )
         else:
             rdf = pd.read_csv( result_path, sep='\t')
 
@@ -483,7 +483,7 @@ class ExperimentValidationBySimilarity:
         
     def _create_annotation_txt_per_section(self, label_aux, cutoff_consensus, force_rewrite=False ):
         self.logger.info("[Validation step] Task (Creating final annotated corpus and text files ) started -----------")
- 		       
+                
         folder_out = self.augdsDir
         oconsensus = os.path.join( self.out, f'top_grouped_{label_result}_results_validation.tsv' )
         
@@ -526,7 +526,7 @@ class ExperimentValidationBySimilarity:
         f.close()
 
         self.logger.info("[Validation step] Task (Creating final annotated corpus and text files ) ended -----------")
- 		            
+                     
     def _mark_as_done(self):
         f = open( self.fready, 'w')
         f.close()
@@ -534,7 +534,7 @@ class ExperimentValidationBySimilarity:
         self.logger.info("----------- Validation ended -----------")
     
     def run(self):
-    	label = 'predlev'
+        label = 'predlev'
         self._manage_mapping(label)
 
         self._manage_prediction(label)
