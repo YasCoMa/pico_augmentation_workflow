@@ -132,13 +132,12 @@ class ExperimentValidationBySimilarity:
     def _map_nctid_pmid_general(self, label_exp):
         mapp = self.__load_mapping_pmid_nctid()
         
-        f = os.path.join( self.outPredDir, 'consensus_augmentation_models.tsv' )
         omap = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
         g = open( omap, 'w' )
         g.write( 'pmid\tctid\ttext\tlabel\n' )
         g.close()
         
-        path = os.path.join( self.outPredDir, f)
+        path = os.path.join( self.outPredDir, 'consensus_augmentation_models.tsv' )
         df = pd.read_csv(path, sep='\t')
         self.predictions_df = df
         del df
