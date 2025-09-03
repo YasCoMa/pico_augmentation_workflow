@@ -750,7 +750,7 @@ class ExperimentValidationBySimilarity:
 
         self.logger.info("[Validation step] Task (Grouping predictions, ranking and aggregating positional information ) ended -----------")
         
-    def _create_annotation_txt_per_section(self, label_aux, cutoff_consensus, force_rewrite=False ):
+    def _create_annotation_txt_per_section(self, label_aux, force_rewrite=False ):
         self.logger.info("[Validation step] Task (Creating final annotated corpus and text files ) started -----------")
                 
         folder_out = self.augdsDir
