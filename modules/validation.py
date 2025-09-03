@@ -666,7 +666,7 @@ class ExperimentValidationBySimilarity:
         widectids = self.__aggregate_nctids(label_exp)
         ctlib, pathlib = self.__load_cts_library(widectids)
 
-        f = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
+        f = f'general_mapping_{label_exp}_nct_pubmed.tsv'
         sourcect = os.path.join( self.out, f)
 
         if(flag_parallel):
