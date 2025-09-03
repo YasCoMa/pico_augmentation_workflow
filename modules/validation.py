@@ -19,7 +19,7 @@ from utils.commons import *
 class ExperimentValidationBySimilarity:
     def __init__(self):
         self.stopwords = ["other", "key", "inclusion criteria", "exclusion criteria", "not specified", "see disease characteristics"]
-        
+
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(filename='log_validation.log', level=logging.INFO)
         
@@ -139,34 +139,35 @@ class ExperimentValidationBySimilarity:
         mapp = self.__load_mapping_pmid_nctid()
         
         omap = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
-        g = open( omap, 'w' )
-        g.write( 'pmid\tctid\ttext\tlabel\n' )
-        g.close()
-        
-        path = os.path.join( self.outPredDir, 'consensus_augmentation_models.tsv' )
-        df = pd.read_csv(path, sep='\t')
-        self.predictions_df = df
-        del df
-        
-        lines = []
-        for pmid in tqdm(mapp):
-            anns = self.__get_snippets_pred_labels( pmid )
-            cts = mapp[pmid]
-            for ctid in cts:
-                if( len(anns) > 0 ):
-                    for a in anns:
-                        items = [pmid, ctid]+a
-                        if( len(items) == 4 ):
-                            line = '\t'.join( items )
-                            lines.append(line)
-                            if(  len(lines) %1000 == 0 ):
-                                with open( path_partial, 'a' ) as g:
-                                    g.write( ('\n'.join(lines) )+'\n' )
-                                lines = []
+        if( not os.path.isfile(omap) ):
+            g = open( omap, 'w' )
+            g.write( 'pmid\tctid\ttext\tlabel\n' )
+            g.close()
+            
+            path = os.path.join( self.outPredDir, 'consensus_augmentation_models.tsv' )
+            df = pd.read_csv(path, sep='\t')
+            self.predictions_df = df
+            del df
+            
+            lines = []
+            for pmid in tqdm(mapp):
+                anns = self.__get_snippets_pred_labels( pmid )
+                cts = mapp[pmid]
+                for ctid in cts:
+                    if( len(anns) > 0 ):
+                        for a in anns:
+                            items = [pmid, ctid]+a
+                            if( len(items) == 4 ):
+                                line = '\t'.join( items )
+                                lines.append(line)
+                                if(  len(lines) %1000 == 0 ):
+                                    with open( omap, 'a' ) as g:
+                                        g.write( ('\n'.join(lines) )+'\n' )
+                                    lines = []
 
-        if(  len(lines) > 0 ):
-            with open( omap, 'a' ) as g:
-                g.write( ('\n'.join(lines) )+'\n' )
+            if(  len(lines) > 0 ):
+                with open( omap, 'a' ) as g:
+                    g.write( ('\n'.join(lines) )+'\n' )
     
     def __treat_predictions(self, path, fname):
         npath = os.path.join( os.path.dirname( path ), 'treated_'+fname )
@@ -671,7 +672,7 @@ class ExperimentValidationBySimilarity:
         f = f'general_mapping_{label_exp}_nct_pubmed.tsv'
         sourcect = os.path.join( self.out, f)
 
-        if(flag_parallel):
+        if( self.flag_parallel ):
             self._get_predictions_parallel(sourcect, ctlib, pathlib, f'{label_exp}', 'fast' )
         else:
             self._get_predictions(sourcect, ctlib, pathlib, f'{label_exp}', 'fast' )
