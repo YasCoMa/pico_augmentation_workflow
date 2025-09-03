@@ -607,56 +607,45 @@ class ExperimentValidationBySimilarity:
 
     def _get_predictions_parallel(self, sourcect, ctlib, pathlib, label_result='', mode='fast'):
         result_path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
-        gone = set()
-        if( os.path.isfile(result_path) ):
-            df = pd.read_csv( result_path, sep='\t' )
-            for i in tqdm(df.index):
-                ctid = df.loc[i, 'ctid']
-                pmid = df.loc[i, 'pmid']
-                test_text = df.loc[i, 'test_text']
-                test_label = df.loc[i, 'test_label']
-
-                line = f"{ctid}\t{pmid}\t{test_label}\t{test_text}"
-                gone.add(line)
-        else:
+        if( not os.path.isfile(result_path) ):
             f = open(result_path, 'w')
             f.write("ctid\tpmid\ttest_label\tfound_ct_label\ttest_text\tfound_ct_text\tscore\n")
             f.close()
 
-        elements = []
+            elements = []
 
-        df = pd.read_csv( sourcect, sep='\t' )
-        for i in tqdm(df.index):
-            ctid = df.loc[i, 'ctid']
-            pmid = df.loc[i, 'pmid']
-            test_text = df.loc[i, 'text']
-            test_label = df.loc[i, 'label']
+            df = pd.read_csv( sourcect, sep='\t' )
+            for i in tqdm(df.index):
+                ctid = df.loc[i, 'ctid']
+                pmid = df.loc[i, 'pmid']
+                test_text = df.loc[i, 'text']
+                test_label = df.loc[i, 'label']
 
-            aux = f"{ctid}\t{pmid}\t{test_label}\t{test_text}"
-            elements.append( [ctid, pmid, test_text, test_label] )
+                aux = f"{ctid}\t{pmid}\t{test_label}\t{test_text}"
+                elements.append( [ctid, pmid, test_text, test_label] )
 
-        flag_ollama = False
+            flag_ollama = False
 
-        job_name = f"{mode}_prediction_parallel"
-        job_path = os.path.join( self.out, job_name )
-        chunk_size = 10000
-        script_path = os.path.join(os.path.dirname( os.path.abspath(__file__)), '_aux_prediction.py')
-        command = f"python3 {script_path} {pathlib} {mode}"
-        config = self.config_path
-        prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'sge', config_path=config, flag_ollama = flag_ollama, ncpus=8 )
+            job_name = f"{mode}_prediction_parallel"
+            job_path = os.path.join( self.out, job_name )
+            chunk_size = 10000
+            script_path = os.path.join(os.path.dirname( os.path.abspath(__file__)), '_aux_prediction.py')
+            command = f"python3 {script_path} {pathlib} {mode}"
+            config = self.config_path
+            prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'sge', config_path=config, flag_ollama = flag_ollama, ncpus=8 )
 
-        test_path_partial = os.path.join( job_path, f'part-task-1.tsv' )
-        if( os.path.exists(test_path_partial) ):
-            path_partial = os.path.join( job_path, f'part-task-*.tsv' )
-            cmdStr = 'for i in '+path_partial+'; do cat $i; done | sort -u >> '+result_path
-            execAndCheck(cmdStr)
+            test_path_partial = os.path.join( job_path, f'part-task-1.tsv' )
+            if( os.path.exists(test_path_partial) ):
+                path_partial = os.path.join( job_path, f'part-task-*.tsv' )
+                cmdStr = 'for i in '+path_partial+'; do cat $i; done | sort -u >> '+result_path
+                execAndCheck(cmdStr)
 
-            cmdStr = 'for i in '+path_partial+'; do rm $i; done '
-            execAndCheck(cmdStr)
+                cmdStr = 'for i in '+path_partial+'; do rm $i; done '
+                execAndCheck(cmdStr)
 
     def __aggregate_nctids(self, label_exp):
         allids = set()
-        f = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
+        f = f'general_mapping_{label_exp}_nct_pubmed.tsv'
         sourcect = os.path.join( self.out, f)
         df = pd.read_csv( sourcect, sep='\t' )
         ctids = set(df.ctid.unique())
