@@ -12,6 +12,10 @@ from tqdm import tqdm
 import logging
 import argparse
 
+root_path = (os.path.sep).join( os.path.dirname(os.path.realpath(__file__)).split( os.path.sep )[:-1] )
+sys.path.append( root_path )
+from utils.commons import *
+
 class ExperimentValidationBySimilarity:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -52,7 +56,7 @@ class ExperimentValidationBySimilarity:
             self.flag_parallel = False
             if( 'config_hpc' in self.config ):
                 self.config_path = self.config['config_hpc']
-                #self.flag_parallel = True
+                self.flag_parallel = True
 
             self.cutoff_consensus = 0.8
             if( 'cutoff_consensus' in self.config ):
@@ -73,7 +77,7 @@ class ExperimentValidationBySimilarity:
         if( not os.path.isdir( self.out ) ) :
             os.makedirs( self.out )
 
-        self.ctDir = os.path.join( self.out, 'clinical_trials' )
+        self.ctDir = os.path.join( self.ctout , 'clinical_trials' )
 
         self.processedCTDir = os.path.join( self.out, 'processed_cts' )
         if( not os.path.isdir( self.processedCTDir ) ) :
@@ -179,7 +183,7 @@ class ExperimentValidationBySimilarity:
         for k in mapp:
             mapp[k] = list(mapp[k])
 
-        f = os.path.join( self.outPredDir, 'consensus_augmentation_models.tsv' )
+        f = 'consensus_augmentation_models.tsv'
         fname = 'consensus'
         path = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
         if( not os.path.isfile(path) ):
@@ -200,7 +204,7 @@ class ExperimentValidationBySimilarity:
             script_path = os.path.join(os.path.dirname( os.path.abspath(__file__)), '_aux_mapping.py')
             command = "python3 "+script_path
             config = self.config_path
-            prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'slurm', config_path=config )
+            prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'sge', config_path=config )
 
             test_path_partial = os.path.join( job_path, f'part-task-1.tsv' )
             if( os.path.exists(test_path_partial) ):
@@ -474,7 +478,7 @@ class ExperimentValidationBySimilarity:
         self.logger.info("[Validation step] Task (Parsing CT to extract target entity true values ) started -----------")
         
         path = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
-        df = pd.read_csv( f"", sep='\t')
+        df = pd.read_csv( path, sep='\t')
         ids = set( df.ctid.values )
         for f in tqdm( os.listdir(self.ctDir) ):
             if( f.startswith('raw') ):
@@ -636,7 +640,7 @@ class ExperimentValidationBySimilarity:
         script_path = os.path.join(os.path.dirname( os.path.abspath(__file__)), '_aux_prediction.py')
         command = f"python3 {script_path} {pathlib} {mode}"
         config = self.config_path
-        prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'slurm', config_path=config, flag_ollama = flag_ollama, ncpus=8 )
+        prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'sge', config_path=config, flag_ollama = flag_ollama, ncpus=8 )
 
         test_path_partial = os.path.join( job_path, f'part-task-1.tsv' )
         if( os.path.exists(test_path_partial) ):
@@ -647,7 +651,7 @@ class ExperimentValidationBySimilarity:
             cmdStr = 'for i in '+path_partial+'; do rm $i; done '
             execAndCheck(cmdStr)
 
-    def __aggregate_nctids(self):
+    def __aggregate_nctids(self, label_exp):
         allids = set()
         f = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')
         sourcect = os.path.join( self.out, f)
@@ -659,7 +663,7 @@ class ExperimentValidationBySimilarity:
     def _manage_prediction(self, label_exp):
         self.logger.info("[Validation step] Task (Obtaining predictions ) started -----------")
         
-        widectids = self.__aggregate_nctids()
+        widectids = self.__aggregate_nctids(label_exp)
         ctlib, pathlib = self.__load_cts_library(widectids)
 
         f = os.path.join( self.out, f'general_mapping_{label_exp}_nct_pubmed.tsv')

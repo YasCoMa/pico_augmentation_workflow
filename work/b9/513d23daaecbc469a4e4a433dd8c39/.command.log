@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 825, in <module>
+    i.run()
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 811, in run
+    self._manage_mapping(label)
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 218, in _manage_mapping
+    self._map_nctid_pmid_general(label)
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 132, in _map_nctid_pmid_general
+    mapp = self.__load_mapping_pmid_nctid()
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 92, in __load_mapping_pmid_nctid
+    for f in tqdm( os.listdir( self.inPredDir ) ):
+AttributeError: 'ExperimentValidationBySimilarity' object has no attribute 'inPredDir'. Did you mean: 'outPredDir'?

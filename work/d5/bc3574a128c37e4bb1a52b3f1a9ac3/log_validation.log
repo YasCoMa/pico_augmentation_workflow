@@ -1,0 +1,4 @@
+INFO:validation:----------- Validation step started -----------
+INFO:validation:[Validation step] Task (Mapping predictions to pmid and CT ) started -----------
+INFO:validation:[Validation step] Task (Mapping predictions to pmid and CT ) ended -----------
+INFO:validation:[Validation step] Task (Parsing CT to extract target entity true values ) started -----------

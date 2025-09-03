@@ -77,7 +77,7 @@ workflow {
         result = PROCESS_PreprocessPubmed( params.dataDir, params.runningConfig, result )
     }
 
-    if( params.mode == "test" | params.mode == "all" ){
+    if( params.mode == "validation" | params.mode == "all" ){
         result = PROCESS_Validation( params.dataDir, params.runningConfig, result )
     }
 

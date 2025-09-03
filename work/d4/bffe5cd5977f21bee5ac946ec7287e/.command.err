@@ -1,0 +1,11 @@
+  0%|          | 0/89076 [00:00<?, ?it/s]100%|██████████| 89076/89076 [00:00<00:00, 908712.82it/s]
+Traceback (most recent call last):
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 826, in <module>
+    i.run()
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 811, in run
+    self._manage_mapping(label)
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 220, in _manage_mapping
+    self._map_nctid_pmid_general_parallel(label)
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 203, in _map_nctid_pmid_general_parallel
+    prepare_job_array( job_name, job_path, command, filetasksFolder=None, taskList=elements, chunk_size=chunk_size, ignore_check = True, wait=True, destroy=True, execpy='python3', hpc_env = 'slurm', config_path=config )
+NameError: name 'prepare_job_array' is not defined

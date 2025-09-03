@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 830, in <module>
+    i.run()
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 817, in run
+    self._parse_ct_raw(label)
+  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 483, in _parse_ct_raw
+    for f in tqdm( os.listdir(self.ctDir) ):
+FileNotFoundError: [Errno 2] No such file or directory: '/aloy/home/ymartins/match_clinical_trial/experiments/validation/validation/clinical_trials'

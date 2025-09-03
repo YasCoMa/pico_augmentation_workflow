@@ -1,0 +1,4 @@
+INFO:process_pubmed:----------- Prediction step started -----------
+INFO:process_pubmed:----------- Process CT step skipped since it was already computed -----------
+INFO:process_pubmed:----------- Process CT step ended -----------
+INFO:process_pubmed:----------- Process CT ended -----------

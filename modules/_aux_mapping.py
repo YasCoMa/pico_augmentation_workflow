@@ -21,7 +21,7 @@ def _get_snippets_pred_labels(df, pmid):
 def exec(subset):
     path_partial = os.path.join( os.getcwd(), f'part-task-{task_id}.tsv' )
     
-    fname = pathdf.split(os.path.sep)[-1].split('.')[0].replace('results_','')
+    fname = 'consensus'
     
     logging.basicConfig( format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO )
     logger = logging.getLogger( f'Validation with model {fname}')

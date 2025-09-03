@@ -1,0 +1,37 @@
+INFO:process_pubmed:----------- Process PubMed step started -----------
+INFO:process_pubmed:----------- Process PubMed step skipped since it was already computed -----------
+INFO:process_pubmed:----------- Process PubMed step ended -----------
+INFO:process_pubmed:[Process PubMed step] Task (Getting abstracts of articles associated to NCT raw info) started -----------
+INFO:process_pubmed:	It will obtain 21407/430104
+INFO:process_pubmed:	Retrieving and parsing chunk 0/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 1000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 1500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 2000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 2500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 3000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 3500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 4000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 4500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 5000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 5500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 6000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 6500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 7000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 7500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 8000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 8500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 9000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 9500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 10000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 10500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 11000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 11500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 12000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 12500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 13000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 13500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 14000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 14500/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 15000/21407
+INFO:process_pubmed:	Retrieving and parsing chunk 15500/21407
