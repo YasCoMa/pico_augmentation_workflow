@@ -18,6 +18,8 @@ from utils.commons import *
 
 class ExperimentValidationBySimilarity:
     def __init__(self):
+        self.stopwords = ["other", "key", "inclusion criteria", "exclusion criteria", "not specified", "see disease characteristics"]
+        
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(filename='log_validation.log', level=logging.INFO)
         
