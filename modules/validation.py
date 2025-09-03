@@ -754,7 +754,7 @@ class ExperimentValidationBySimilarity:
         self.logger.info("[Validation step] Task (Creating final annotated corpus and text files ) started -----------")
                 
         folder_out = self.augdsDir
-        oconsensus = os.path.join( self.out, f'top_grouped_{label_result}_results_validation.tsv' )
+        oconsensus = os.path.join( self.out, f'top_grouped_{label_aux}_results_validation.tsv' )
         
         cnt = {}
         not_found = set()
