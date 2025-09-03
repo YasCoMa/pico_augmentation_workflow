@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 17, in <module>
-    from utils.commons import *
-  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/utils/commons.py", line 10, in <module>
-    from utils import HPC, Config
-ImportError: cannot import name 'HPC' from 'utils' (unknown location)

@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/process_pubmed.py", line 202, in <module>
-    i = ProcessPubmed()
-  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/process_pubmed.py", line 19, in __init__
-    self._get_arguments()
-  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/process_pubmed.py", line 47, in _get_arguments
-    self.config = json.load(g)
-NameError: name 'json' is not defined

@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/process_pubmed.py", line 7, in <module>
-    from Bio import Entrez
-ModuleNotFoundError: No module named 'Bio'
