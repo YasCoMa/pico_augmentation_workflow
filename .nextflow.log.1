@@ -1,0 +1,151 @@
+Sep-03 22:26:19.203 [main] DEBUG nextflow.cli.Launcher - $> nextflow run -bg /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/main.nf --dataDir /aloy/home/ymartins/match_clinical_trial/validation_trials/ --runningConfig /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/validation_config.json --mode validation
+Sep-03 22:26:19.363 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.6
+Sep-03 22:26:19.405 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/ymartins/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.1,nf-k8s@1.0.0,nf-tower@1.11.4,nf-wave@1.12.1
+Sep-03 22:26:19.525 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Sep-03 22:26:19.527 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Sep-03 22:26:19.530 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Sep-03 22:26:19.555 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Sep-03 22:26:19.638 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/ymartins/.nextflow/secrets/store.json
+Sep-03 22:26:19.654 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@2d195ee4] - activable => nextflow.secret.LocalSecretsProvider@2d195ee4
+Sep-03 22:26:19.726 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Sep-03 22:26:19.848 [main] INFO  nextflow.cli.CmdRun - Launching `/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/main.nf` [hopeful_elion] DSL2 - revision: ad59aa92e8
+Sep-03 22:26:19.850 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Sep-03 22:26:19.850 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Sep-03 22:26:19.960 [main] DEBUG nextflow.Session - Session UUID: ded4a154-7205-4256-90a0-b2dde917caa1
+Sep-03 22:26:19.960 [main] DEBUG nextflow.Session - Run name: hopeful_elion
+Sep-03 22:26:19.961 [main] DEBUG nextflow.Session - Executor pool size: 8
+Sep-03 22:26:19.977 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Sep-03 22:26:19.988 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Sep-03 22:26:20.057 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.6 build 5954
+  Created: 01-07-2025 11:27 UTC (13:27 CEST)
+  System: Linux 5.15.0-139-generic
+  Runtime: Groovy 4.0.26 on OpenJDK 64-Bit Server VM 23.0.2-internal-adhoc.conda.src
+  Encoding: UTF-8 (UTF-8)
+  Process: 3097616@murakami [127.0.0.1]
+  CPUs: 8 - Mem: 15.5 GB (5.5 GB) - Swap: 16 GB (10.9 GB)
+Sep-03 22:26:20.124 [main] DEBUG nextflow.Session - Work-dir: /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/work [nfs]
+Sep-03 22:26:20.125 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/bin
+Sep-03 22:26:20.140 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Sep-03 22:26:20.154 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Sep-03 22:26:20.158 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Sep-03 22:26:20.201 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Sep-03 22:26:20.226 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 9; maxThreads: 1000
+Sep-03 22:26:20.486 [main] DEBUG nextflow.Session - Session start
+Sep-03 22:26:21.452 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Sep-03 22:26:21.477 [main] INFO  nextflow.Nextflow -  PICO Augmentation workflow  -  P I P E L I N E
+ ===================================
+ dataDir       : /aloy/home/ymartins/match_clinical_trial/validation_trials/
+ runningConfig : /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/validation_config.json
+ mode       : validation
+ 
+Sep-03 22:26:21.613 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Sep-03 22:26:21.614 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-03 22:26:21.625 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Sep-03 22:26:21.638 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=8; memory=15.5 GB; capacity=8; pollInterval=100ms; dumpInterval=5m
+Sep-03 22:26:21.643 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Sep-03 22:26:21.705 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'setEnvironment': maxForks=0; fair=false; array=0
+Sep-03 22:26:21.813 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Sep-03 22:26:21.813 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Sep-03 22:26:21.814 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'PROCESS_Validation': maxForks=0; fair=false; array=0
+Sep-03 22:26:21.824 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: PROCESS_PreprocessPubmed, PROCESS_Validation, setEnvironment, PROCESS_PreprocessCT
+Sep-03 22:26:21.828 [main] DEBUG nextflow.Session - Igniting dataflow network (2)
+Sep-03 22:26:21.829 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > setEnvironment
+Sep-03 22:26:21.830 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > PROCESS_Validation
+Sep-03 22:26:21.831 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_19a125aad466712f: /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/main.nf
+Sep-03 22:26:21.831 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Sep-03 22:26:21.832 [main] DEBUG nextflow.Session - Session await
+Sep-03 22:26:22.120 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-03 22:26:22.126 [Task submitter] INFO  nextflow.Session - [64/7567a8] Submitted process > setEnvironment
+Sep-03 22:26:22.161 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: setEnvironment; status: COMPLETED; exit: 0; error: -; workDir: /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/work/64/7567a890a20d0e35baafcb03359b7b]
+Sep-03 22:26:22.162 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Sep-03 22:26:22.228 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Sep-03 22:26:22.229 [Task submitter] INFO  nextflow.Session - [38/b41ede] Submitted process > PROCESS_Validation
+Sep-03 22:31:21.782 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor local > tasks to be completed: 1 -- submitted tasks are shown below
+~> TaskHandler[id: 2; name: PROCESS_Validation; status: RUNNING; exit: -; error: -; workDir: /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/work/38/b41ede73354120eaa5d6a377f594b9]
+Sep-03 22:35:13.279 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: PROCESS_Validation; status: COMPLETED; exit: 1; error: -; workDir: /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/work/38/b41ede73354120eaa5d6a377f594b9]
+Sep-03 22:35:13.286 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=PROCESS_Validation; work-dir=/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/work/38/b41ede73354120eaa5d6a377f594b9
+  error [nextflow.exception.ProcessFailedException]: Process `PROCESS_Validation` terminated with an error exit status (1)
+Sep-03 22:35:13.316 [TaskFinalizer-2] ERROR nextflow.processor.TaskProcessor - Error executing process > 'PROCESS_Validation'
+
+Caused by:
+  Process `PROCESS_Validation` terminated with an error exit status (1)
+
+
+Command executed:
+
+  python3 /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py -execDir validation_trials -paramFile validation_config.json
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+   87%|████████▋ | 262/302 [06:40<00:55,  1.39s/it]
+   87%|████████▋ | 263/302 [06:41<00:56,  1.44s/it]
+   87%|████████▋ | 264/302 [06:43<00:52,  1.38s/it]
+   88%|████████▊ | 265/302 [06:44<00:51,  1.38s/it]
+   88%|████████▊ | 266/302 [06:46<00:53,  1.48s/it]
+   88%|████████▊ | 267/302 [06:47<00:53,  1.52s/it]
+   89%|████████▊ | 268/302 [06:49<00:51,  1.52s/it]
+   89%|████████▉ | 269/302 [06:51<00:54,  1.65s/it]
+   89%|████████▉ | 270/302 [06:52<00:50,  1.58s/it]
+   90%|████████▉ | 271/302 [06:54<00:46,  1.50s/it]
+   90%|█████████ | 272/302 [06:56<00:52,  1.77s/it]
+   90%|█████████ | 273/302 [06:57<00:47,  1.65s/it]
+   91%|█████████ | 274/302 [06:59<00:49,  1.78s/it]
+   91%|█████████ | 275/302 [07:01<00:46,  1.70s/it]
+   91%|█████████▏| 276/302 [07:03<00:50,  1.94s/it]
+   92%|█████████▏| 277/302 [07:05<00:43,  1.76s/it]
+   92%|█████████▏| 278/302 [07:06<00:40,  1.67s/it]
+   92%|█████████▏| 279/302 [07:08<00:38,  1.67s/it]
+   93%|█████████▎| 280/302 [07:10<00:41,  1.90s/it]
+   93%|█████████▎| 281/302 [07:12<00:37,  1.76s/it]
+   93%|█████████▎| 282/302 [07:14<00:36,  1.81s/it]
+   94%|█████████▎| 283/302 [07:17<00:44,  2.32s/it]
+   94%|█████████▍| 284/302 [07:20<00:44,  2.45s/it]
+   94%|█████████▍| 285/302 [07:23<00:42,  2.49s/it]
+   95%|█████████▍| 286/302 [07:24<00:34,  2.15s/it]
+   95%|█████████▌| 287/302 [07:25<00:29,  1.94s/it]
+   95%|█████████▌| 288/302 [07:27<00:25,  1.80s/it]
+   96%|█████████▌| 289/302 [07:30<00:26,  2.05s/it]
+   96%|█████████▌| 290/302 [07:31<00:22,  1.90s/it]
+   96%|█████████▋| 291/302 [07:32<00:19,  1.74s/it]
+   97%|█████████▋| 292/302 [07:34<00:16,  1.68s/it]
+   97%|█████████▋| 293/302 [07:35<00:14,  1.60s/it]
+   97%|█████████▋| 294/302 [07:37<00:12,  1.59s/it]
+   98%|█████████▊| 295/302 [07:38<00:10,  1.46s/it]
+   98%|█████████▊| 296/302 [07:39<00:08,  1.41s/it]
+   98%|█████████▊| 297/302 [07:42<00:08,  1.80s/it]
+   99%|█████████▊| 298/302 [07:44<00:07,  1.79s/it]
+   99%|█████████▉| 299/302 [07:46<00:05,  1.77s/it]
+   99%|█████████▉| 300/302 [07:48<00:03,  1.93s/it]
+  100%|█████████▉| 301/302 [07:50<00:02,  2.00s/it]
+  100%|██████████| 302/302 [07:51<00:00,  1.71s/it]
+  100%|██████████| 302/302 [07:51<00:00,  1.56s/it]
+  Traceback (most recent call last):
+    File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 822, in <module>
+      i.run()
+    File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 815, in run
+      self._create_annotation_txt_per_section(label)
+    File "/aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/modules/validation.py", line 757, in _create_annotation_txt_per_section
+      oconsensus = os.path.join( self.out, f'top_grouped_{label_result}_results_validation.tsv' )
+  NameError: name 'label_result' is not defined
+
+Work dir:
+  /aloy/home/ymartins/match_clinical_trial/ctpico_validation_workflow/work/38/b41ede73354120eaa5d6a377f594b9
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+Sep-03 22:35:13.321 [main] DEBUG nextflow.Session - Session await > all processes finished
+Sep-03 22:35:13.322 [TaskFinalizer-2] DEBUG nextflow.Session - Session aborted -- Cause: Process `PROCESS_Validation` terminated with an error exit status (1)
+Sep-03 22:35:13.344 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Sep-03 22:35:13.344 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Sep-03 22:35:13.368 [TaskFinalizer-2] WARN  nextflow.util.SimpleAgent - Got an interrupted exception while taking agent result | java.lang.InterruptedException
+Sep-03 22:35:13.368 [main] INFO  nextflow.Nextflow - Oops .. something went wrong
+Sep-03 22:35:13.378 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=1; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=5ms; failedDuration=8m 51s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+Sep-03 22:35:13.394 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Sep-03 22:35:13.439 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
