@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+from strsimpy import *
+
 import logging
 import argparse
 
@@ -541,7 +543,8 @@ class ExperimentValidationBySimilarity:
                     nel = self.__normalize_string(el)
                     nsnippet = self.__normalize_string(snippet)
                     
-                    score = Levenshtein.ratio( nsnippet, nel )
+                    #score = Levenshtein.ratio( nsnippet, nel )
+                    score = cosine.Cosine(1).similarity( nsnippet, nel )
                     if(score >= cutoff):
                         if( score < 1):
                             clss = 'm'+str(score).split('.')[1][0]+'0'
@@ -711,7 +714,7 @@ class ExperimentValidationBySimilarity:
         
         if( not os.path.isfile(result_path) ):
             rdf = pd.read_csv( path, sep='\t')
-            rdf = rdf[ ['ctid', 'pmid','test_label','test_text', 'score'] ]
+            #rdf = rdf[ ['ctid', 'pmid','test_label','test_text', 'score'] ]
             
             rdf['val'] = [ float(s.split('-')[0]) for s in rdf['score'] ]
             rdf['stat_class'] = [ s.split('-')[1] for s in rdf['score'] ]

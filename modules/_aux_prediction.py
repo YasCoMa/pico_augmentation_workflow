@@ -7,6 +7,8 @@ import logging
 import Levenshtein
 import pandas as pd
 
+from strsimpy import *
+
 pathlib = sys.argv[1]
 mode = sys.argv[2]
 
@@ -47,7 +49,8 @@ def _send_query_fast( snippet, ctlib, ctid, label='all'):
                 nel = normalize_string(el)
                 nsnippet = normalize_string(snippet)
                 
-                score = Levenshtein.ratio( nsnippet, nel )
+                #score = Levenshtein.ratio( nsnippet, nel )
+                score = cosine.Cosine(1).similarity( nsnippet, nel )
                 if(score >= cutoff):
                     if( score < 1):
                         clss = 'm'+str(score).split('.')[1][0]+'0'
