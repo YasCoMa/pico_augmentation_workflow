@@ -806,7 +806,7 @@ class ExperimentValidationBySimilarity:
         self.logger.info("----------- Validation ended -----------")
     
     def run(self):
-        label = 'predlev'
+        label = 'predss'
         self._manage_mapping(label)
 
         self._parse_ct_raw(label)
