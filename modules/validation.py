@@ -714,20 +714,24 @@ class ExperimentValidationBySimilarity:
         
         if( not os.path.isfile(result_path) ):
             rdf = pd.read_csv( path, sep='\t')
-            #rdf = rdf[ ['ctid', 'pmid','test_label','test_text', 'score'] ]
+            rdf = rdf[ ['ctid', 'pmid','test_label','test_text', 'score'] ]
             
-            rdf['val'] = [ float(s.split('-')[0]) for s in rdf['score'] ]
-            rdf['stat_class'] = [ s.split('-')[1] for s in rdf['score'] ]
+            scores = rdf['score']
+            rdf['val'] = [ float(s.split('-')[0]) for s in scores ]
             rdf = rdf.drop('score', axis=1)
             rdf = rdf.groupby(['ctid', 'pmid','test_label','test_text']).max().reset_index()
-
+            
             input_ = []
             start_ = []
             end_ = []
+            clss = []
             for i in rdf.index:
                 pmid = rdf.loc[i, 'pmid']
                 entity = rdf.loc[i, 'test_label']
                 word = rdf.loc[i, 'test_text']
+                score = rdf.loc[i, 'val']
+                vclass = str(score).split('.')[1][0]+'0'
+                clss.append(vclass)
 
                 key = f'{pmid}#$@{entity}#$@{word}'
                 pos = mapped_positions[key][0]
@@ -735,6 +739,7 @@ class ExperimentValidationBySimilarity:
                 start_.append(pos["start"])
                 end_.append(pos["end"])
 
+            rdf['stat_class'] = clss
             rdf["input_file"] = input_
             rdf["start"] = start_
             rdf["end"] = end_
@@ -770,17 +775,7 @@ class ExperimentValidationBySimilarity:
             word = df.loc[i, 'word']
             outname = df.loc[i, 'input_file']
 
-            # Feed annotation files that will be the input for another training round
-            path = os.path.join( folder_out, f'{outname}.ann')
-            if(not outname in cnt):
-                cnt[outname] = 1
-                g = open(path, 'w')
-                g.close()
-
-            with open(path, 'a') as g:
-                g.write( f"T{ cnt[outname] }\t{entity} {start} {end}\t{word}\n" )
-            cnt[outname] += 1
-
+            flag = False
             # Check txt original file
             inpath = os.path.join(self.predInDir, f"{outname}.txt")
             outpath = os.path.join( folder_out, f'{outname}.txt')
@@ -788,9 +783,23 @@ class ExperimentValidationBySimilarity:
                 if( not os.path.isfile(inpath) ):
                     inpath = inpath.replace('.txt', '..txt')
 
-                text = open(inpath, 'r').read()
-                with open(outpath, 'w') as g:
-                    g.write( text.strip() )
+                if( os.path.isfile(inpath) ):
+                    text = open(inpath, 'r').read()
+                    with open(outpath, 'w') as g:
+                        g.write( text.strip() )
+                    flag = True
+
+            if(flag):
+                # Feed annotation files that will be the input for another training round
+                path = os.path.join( folder_out, f'{outname}.ann')
+                if(not outname in cnt):
+                    cnt[outname] = 1
+                    g = open(path, 'w')
+                    g.close()
+
+                with open(path, 'a') as g:
+                    g.write( f"T{ cnt[outname] }\t{entity} {start} {end}\t{word}\n" )
+                cnt[outname] += 1
 
         opath = os.path.join( self.out, "keys_not_mapped_result4.txt")
         f = open(opath, 'w')

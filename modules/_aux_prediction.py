@@ -19,7 +19,7 @@ subset = pickle.load(open(task_file, 'rb'))[task_id]
 ctlib = json.load( open(pathlib, 'r') )
 
 def normalize_string(s):
-    s = s.lower()
+    s = str(s).lower()
     s = ' '.join( re.findall(r'[a-zA-Z0-9\-]+',s) )
     return s
 
