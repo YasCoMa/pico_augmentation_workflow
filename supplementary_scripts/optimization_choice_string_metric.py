@@ -17,19 +17,27 @@ gold_pairs_test = ""
 
 class SimilarityMetricOptimization:
     def __init__(self, fout):
-        self.ingold = '/aloy/home/ymartins/match_clinical_trial/valout/fast_gold_results_test_validation.tsv'
-        self.outPredDir = '/aloy/home/ymartins/match_clinical_trial/experiments/biobert_trial/biobert-base-cased-v1.2-finetuned-ner/prediction/'
-        
-        self.goldDir = '/aloy/home/ymartins/match_clinical_trial/experiments/data/'
-        # compress the processed_cts folder and put here so that the person can set it up in the out dir
+        # Uncompress the original human curated dataset to replicate analysis
+        self.goldDir = os.path.join( fout, "goldds" ) 
+        if( not os.path.isdir( self.goldDir ) ) :
+            os.makedirs( self.goldDir )
+
+            processed_goldds = os.path.join(root_path, "supplementary_scripts", "pico_corpus.tar.gz")
+            os.system(f"tar xzf {processed_goldds} -C {self.goldDir}")
+
+        # Uncompress the json files regarding the NCBI clinical trials raw data
         self.out_ct_processed = os.path.join( fout, "processed_cts" ) 
+        if( not os.path.isdir( self.out_ct_processed ) ) :
+            os.makedirs( self.out_ct_processed )
+
+            processed_cts_compressed = os.path.join(root_path, "supplementary_scripts", "processed_cts.tar.gz")
+            os.system(f"tar xzf {processed_cts_compressed} -C {self.out_ct_processed}")
 
         self.out = fout
         self.fout = os.path.join(fout, 'optimization')
         if( not os.path.isdir( self.fout ) ) :
             os.makedirs( self.fout )
             
-
     # -------- Gold ds
 
     def _get_snippets_labels(self, pmid):
@@ -188,9 +196,11 @@ class SimilarityMetricOptimization:
 
         self._map_nctid_pmid_gold()
         sourcect = os.path.join( self.out, 'goldds_labelled_mapping_nct_pubmed.tsv')
+
         df = pd.read_csv( sourcect, sep='\t' )
         ids = set(df.ctid.unique())
         ctlib, pathlib = self.__load_cts_library(ids)
+
         self._get_predictions(sourcect, ctlib, pathlib, 'fast_gold' )
         gold_pairs_test = os.path.join( self.out, "fast_gold_results_test_validation.tsv" )
 
@@ -232,9 +242,10 @@ class SimilarityMetricOptimization:
         return rdf
 
     def get_coverage_gold_ctapi(self):
+        # Perform analysis of coverage and summarizes the optimization results in a boxplot
+        
         label_result = "cosine"
         self._aggregate_group_predictions(label_result)
-        # Perform analysis of coverage and summarizes the optimization results in a boxplot
 
         path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
         df = pd.read_csv( path, sep='\t')
@@ -293,6 +304,9 @@ class SimilarityMetricOptimization:
         self.get_coverage_gold_ctapi()
 
 if( __name__ == "__main__" ):
-    odir = '/aloy/home/ymartins/match_clinical_trial/out_ss_choice_optimization'
+    odir = './out_ss_choice_optimization'
+    if( len(sys.argv) > 1 ):
+        odir = sys.argv[1]
+
     i = SimilarityMetricOptimization( odir )
     i.run()

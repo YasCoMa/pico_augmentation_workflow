@@ -21,7 +21,7 @@ def objective_distance(trial):
     m = trial.suggest_categorical("metric", metrics)
     
     scores = []
-    df = pd.read_csv('/aloy/home/ymartins/match_clinical_trial/valout/fast_gold_results_test_validation.tsv', sep='\t')
+    df = pd.read_csv( gold_pairs_test, sep='\t')
     tmp = df[ ['ctid', 'pmid', 'test_text', 'test_label'] ]
     df = df[ ['found_ct_text', 'test_text'] ]
     for i in df.index:
@@ -46,7 +46,7 @@ def objective_similarity(trial):
     m = trial.suggest_categorical("metric", metrics)
 
     scores = []
-    df = pd.read_csv('/aloy/home/ymartins/match_clinical_trial/valout/fast_gold_results_test_validation.tsv', sep='\t')
+    df = pd.read_csv( gold_pairs_test, sep='\t')
     tmp = df[ ['ctid', 'pmid', 'test_text', 'test_label'] ]
     df = df[ ['found_ct_text', 'test_text'] ]
     for i in df.index:
