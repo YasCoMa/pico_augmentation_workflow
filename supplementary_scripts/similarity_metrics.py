@@ -15,58 +15,6 @@ def process_pair(a, b, with_norm = 'yes'):
         b = __normalize_string(b)
     return a, b
 
-def objective_distance(trial):
-    metrics = ['levenshtein', 'damerau', 'jaccard', 'cosine', 'jaro_winkler', 'longest_common_subsequence', 'metric_lcs', 'ngram', 'optimal_string_alignment', 'overlap_coefficient', 'qgram', 'sorensen_dice']
-    norm = trial.suggest_categorical("normalization", ['no', 'yes'])
-    m = trial.suggest_categorical("metric", metrics)
-    
-    scores = []
-    df = pd.read_csv( gold_pairs_test, sep='\t')
-    tmp = df[ ['ctid', 'pmid', 'test_text', 'test_label'] ]
-    df = df[ ['found_ct_text', 'test_text'] ]
-    for i in df.index:
-        a, b = process_pair( df.loc[i, 'found_ct_text'], df.loc[i, 'test_text'], norm )
-        try:
-            dist = eval(f"compute_distance_{m}")(a, b)
-        except:
-            dist = 'invalid'
-            pass
-        scores.append(dist)
-    tmp['score'] = scores
-    tmp = tmp[ tmp.score != 'invalid' ]
-
-    tmp = tmp.groupby( ['ctid', 'pmid', 'test_text', 'test_label'] ).min().reset_index()
-    mean = tmp.score.mean()
-    
-    return mean
-
-def objective_similarity(trial):
-    metrics = ['levenshtein', 'damerau', 'jaccard', 'cosine', 'jaro_winkler', 'longest_common_subsequence', 'metric_lcs', 'ngram', 'optimal_string_alignment', 'overlap_coefficient', 'qgram', 'sorensen_dice']
-    norm = trial.suggest_categorical("normalization", ['no', 'yes'])
-    m = trial.suggest_categorical("metric", metrics)
-
-    scores = []
-    df = pd.read_csv( gold_pairs_test, sep='\t')
-    tmp = df[ ['ctid', 'pmid', 'test_text', 'test_label'] ]
-    df = df[ ['found_ct_text', 'test_text'] ]
-    for i in df.index:
-        a, b = process_pair( df.loc[i, 'found_ct_text'], df.loc[i, 'test_text'], norm )
-        try:
-            dist = eval(f"compute_similarity_{m}")(a, b)
-        except:
-            dist = 'invalid'
-            pass
-        scores.append(dist)
-    tmp['score'] = scores
-    tmp = tmp[ tmp.score != 'invalid' ]
-
-    mean = 0
-    if( len(tmp) > 0 ): # Not all the metrics have the similarity function implemented
-        tmp = tmp.groupby( ['ctid', 'pmid', 'test_text', 'test_label'] ).max().reset_index()
-        mean = tmp.score.mean()
-    
-    return mean
-
 '''
 The following lines must be added in the place of instalation (/aloy/home/ymartins/miniconda3/envs/matchct_env/lib/python3.10/site-packages/strsimpy/) of this package:
 from .jaro_winkler import JaroWinkler

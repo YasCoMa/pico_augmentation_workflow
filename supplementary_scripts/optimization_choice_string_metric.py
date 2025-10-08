@@ -1,10 +1,12 @@
 import os
 import re
 import sys
+import json
 import pickle
 import optuna
 import pandas as pd
 import Levenshtein
+from tqdm import tqdm
 from strsimpy import *
 import plotly.express as px
 from scipy.stats import ranksums
@@ -15,25 +17,74 @@ from supplementary_scripts.similarity_metrics import *
 
 gold_pairs_test = ""
 
+def objective_distance(trial):
+    metrics = ['levenshtein', 'damerau', 'jaccard', 'cosine', 'jaro_winkler', 'longest_common_subsequence', 'metric_lcs', 'ngram', 'optimal_string_alignment', 'overlap_coefficient', 'qgram', 'sorensen_dice']
+    norm = trial.suggest_categorical("normalization", ['no', 'yes'])
+    m = trial.suggest_categorical("metric", metrics)
+    
+    scores = []
+    df = pd.read_csv( gold_pairs_test, sep='\t')
+    tmp = df[ ['ctid', 'pmid', 'test_text', 'test_label'] ]
+    df = df[ ['found_ct_text', 'test_text'] ]
+    for i in df.index:
+        a, b = process_pair( df.loc[i, 'found_ct_text'], df.loc[i, 'test_text'], norm )
+        try:
+            dist = eval(f"compute_distance_{m}")(a, b)
+        except:
+            dist = 'invalid'
+            pass
+        scores.append(dist)
+    tmp['score'] = scores
+    tmp = tmp[ tmp.score != 'invalid' ]
+
+    tmp = tmp.groupby( ['ctid', 'pmid', 'test_text', 'test_label'] ).min().reset_index()
+    mean = tmp.score.mean()
+    
+    return mean
+
+def objective_similarity(trial):
+    metrics = ['levenshtein', 'damerau', 'jaccard', 'cosine', 'jaro_winkler', 'longest_common_subsequence', 'metric_lcs', 'ngram', 'optimal_string_alignment', 'overlap_coefficient', 'qgram', 'sorensen_dice']
+    norm = trial.suggest_categorical("normalization", ['no', 'yes'])
+    m = trial.suggest_categorical("metric", metrics)
+
+    scores = []
+    df = pd.read_csv( gold_pairs_test, sep='\t')
+    tmp = df[ ['ctid', 'pmid', 'test_text', 'test_label'] ]
+    df = df[ ['found_ct_text', 'test_text'] ]
+    for i in df.index:
+        a, b = process_pair( df.loc[i, 'found_ct_text'], df.loc[i, 'test_text'], norm )
+        try:
+            dist = eval(f"compute_similarity_{m}")(a, b)
+        except:
+            dist = 'invalid'
+            pass
+        scores.append(dist)
+    tmp['score'] = scores
+    tmp = tmp[ tmp.score != 'invalid' ]
+
+    mean = 0
+    if( len(tmp) > 0 ): # Not all the metrics have the similarity function implemented
+        tmp = tmp.groupby( ['ctid', 'pmid', 'test_text', 'test_label'] ).max().reset_index()
+        mean = tmp.score.mean()
+    
+    return mean
+
 class SimilarityMetricOptimization:
     def __init__(self, fout):
+        self.out = fout
+        
         # Uncompress the original human curated dataset to replicate analysis
-        self.goldDir = os.path.join( fout, "goldds" ) 
-        if( not os.path.isdir( self.goldDir ) ) :
-            os.makedirs( self.goldDir )
-
+        self.goldDir = os.path.join( fout, "pico_corpus_brat_annotated_files" ) 
+        if( not os.path.exists(self.goldDir) ):
             processed_goldds = os.path.join(root_path, "supplementary_scripts", "pico_corpus.tar.gz")
-            os.system(f"tar xzf {processed_goldds} -C {self.goldDir}")
+            os.system(f"tar xzf {processed_goldds} -C {self.out}")
 
         # Uncompress the json files regarding the NCBI clinical trials raw data
         self.out_ct_processed = os.path.join( fout, "processed_cts" ) 
-        if( not os.path.isdir( self.out_ct_processed ) ) :
-            os.makedirs( self.out_ct_processed )
-
+        if( not os.path.exists(self.out_ct_processed) ):
             processed_cts_compressed = os.path.join(root_path, "supplementary_scripts", "processed_cts.tar.gz")
-            os.system(f"tar xzf {processed_cts_compressed} -C {self.out_ct_processed}")
+            os.system(f"tar xzf {processed_cts_compressed} -C {self.out}")
 
-        self.out = fout
         self.fout = os.path.join(fout, 'optimization')
         if( not os.path.isdir( self.fout ) ) :
             os.makedirs( self.fout )
@@ -202,6 +253,7 @@ class SimilarityMetricOptimization:
         ctlib, pathlib = self.__load_cts_library(ids)
 
         self._get_predictions(sourcect, ctlib, pathlib, 'fast_gold' )
+        global gold_pairs_test
         gold_pairs_test = os.path.join( self.out, "fast_gold_results_test_validation.tsv" )
 
     def check_best_string_sim_metric(self):
@@ -210,17 +262,19 @@ class SimilarityMetricOptimization:
 
         studies = { 'similarity': 'maximize', 'distance': 'minimize' }
         for s in studies:
-            print("Optimizing for ", s)
-            func = eval( f'objective_{s}' )
-            direction = studies[s]
+            opath = f"{self.fout}/by_{s}_best_params.pkl"
+            if( not os.path.exists(opath) ):
+                print("Optimizing for ", s)
+                func = eval( f'objective_{s}' )
+                direction = studies[s]
 
-            study = optuna.create_study( direction = direction )
-            study.optimize( func, n_trials = 50 )
-            print('\tBest params:', study.best_trial)
+                study = optuna.create_study( direction = direction )
+                study.optimize( func, n_trials = 50 )
+                print('\tBest params:', study.best_trial)
 
-            file = open(f"{self.fout}/by_{s}_best_params.pkl", "wb")
-            pickle.dump(study.best_trial, file)
-            file.close()
+                file = open( opath, "wb")
+                pickle.dump(study.best_trial, file)
+                file.close()
 
     def _aggregate_group_predictions(self, label_result):
         path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
@@ -243,8 +297,11 @@ class SimilarityMetricOptimization:
 
     def get_coverage_gold_ctapi(self):
         # Perform analysis of coverage and summarizes the optimization results in a boxplot
-        
-        label_result = "cosine"
+        opath = f"{self.fout}/by_similarity_best_params.pkl"
+        bmetric = pickle.load( open( opath, 'rb') )
+        bmetric = bmetric.params['metric']
+
+        label_result = "fast_gold"
         self._aggregate_group_predictions(label_result)
 
         path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
@@ -256,46 +313,47 @@ class SimilarityMetricOptimization:
         scores_nyes = []
         scores_nno = []
         entities = []
-        opath = os.path.join( self.fout, f'{label_result}_enriched_results_validation.tsv')
+        opath = os.path.join( self.fout, f'{label_result}_{bmetric}_results_validation.tsv')
         df = pd.read_csv( path, sep='\t')
         for i in df.index:
             entities.append( df.loc[i, 'test_label'] )
 
             ay, by = process_pair( df.loc[i, 'found_ct_text'], df.loc[i, 'test_text'], 'yes' )
             an, bn = process_pair( df.loc[i, 'found_ct_text'], df.loc[i, 'test_text'], 'no' )
+            func = eval( f"compute_similarity_{bmetric}")
             try:
-                sim_nyes = compute_similarity_cosine(ay, by)
-                sim_nno = compute_similarity_cosine(an, bn)
+                sim_nyes = func(ay, by)
+                sim_nno = func(an, bn)
             except:
                 sim_nyes = 0
                 sim_nno = 0
             scores_nyes.append(sim_nyes)
             scores_nno.append(sim_nno)
 
-        df['cosine_score_with_norm'] = scores_nyes
-        df['cosine_score_without_norm'] = scores_nno
+        df['score_with_norm'] = scores_nyes
+        df['score_without_norm'] = scores_nno
         df.to_csv( opath, sep='\t', index=None)
         
-        opath = os.path.join( self.fout, f'grouped_{label_result}_enriched_results_validation.tsv')
-        df = df[ ['ctid', 'pmid', 'test_text', 'test_label', 'cosine_score_with_norm', 'cosine_score_without_norm'] ]
+        opath = os.path.join( self.fout, f'grouped_{label_result}_{bmetric}_results_validation.tsv')
+        df = df[ ['ctid', 'pmid', 'test_text', 'test_label', 'score_with_norm', 'score_without_norm'] ]
         df = df.groupby( ['ctid', 'pmid', 'test_text', 'test_label'] ).max().reset_index()
         df.to_csv( opath, sep='\t', index=None)
         
-        df = df[ ['test_label', 'cosine_score_with_norm'] ]
-        df.columns = ["Entity", 'Cosine similarity']
-        fig = px.box(df, x="Entity", y="Cosine similarity", points="all")
-        opath = os.path.join(self.fout, 'cosine_gold_grouped_distribution_scoresim.png')
+        df = df[ ['test_label', 'score_with_norm'] ]
+        df.columns = ["Entity", f"{ bmetric.capitalize() } similarity"]
+        fig = px.box(df, x="Entity", y=f"{ bmetric.capitalize() } similarity", points="all")
+        opath = os.path.join(self.fout, f'{bmetric}_gold_grouped_distribution_scoresim.png')
         fig.write_image( opath )
 
         subdf = pd.DataFrame()
         subdf["Entity"] = entities * 2
-        subdf["Cosine similarity"] = scores_nyes + scores_nno
+        subdf[ f"{ bmetric.capitalize() } similarity" ] = scores_nyes + scores_nno
 
         pvalue = ranksums(scores_nyes, scores_nno).pvalue
         title = "Transformation (P-value: %.5f)" %(pvalue)
         subdf[ title ] = ['With normalization']*len(scores_nyes) + ['Without normalization']*len(scores_nno)
-        fig = px.box( subdf, x="Entity", y="Cosine similarity", color = title )
-        opath = os.path.join(self.fout, 'cosine_gold_all_distribution_scoresim.png')
+        fig = px.box( subdf, x="Entity", y=f"{ bmetric.capitalize() } similarity", color = title )
+        opath = os.path.join(self.fout, f'{bmetric}_gold_all_distribution_scoresim.png')
         fig.write_image( opath )
 
     def run(self):
