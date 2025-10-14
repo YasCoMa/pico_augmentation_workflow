@@ -353,7 +353,7 @@ class ExperimentValidationBySimilarity:
                 pass
             
             try:
-                moutcomes = s['resultsSection']['outcomeMeasuresModule']['outcomeMeasuresModule']['outcomeMeasures']
+                moutcomes = s['resultsSection']['outcomeMeasuresModule']['outcomeMeasures']
                 for g in moutcomes:
                     out_measures.add( g['title'] )
             except:
@@ -371,8 +371,8 @@ class ExperimentValidationBySimilarity:
             try:
                 gresults = s['resultsSection']['baselineCharacteristicsModule']['measures']
                 for g in gresults:
-                    if( g['title'].find('ethnicity') != -1 ):
-                        ethnicity.update( list(map( lambda x: x['title'], g['classes'] )) )
+                    if( g['title'].lower().find('ethnicity') != -1 ):
+                        ethnicity.update( list(map( lambda x: x['title'], g['classes'][0]['categories'] )) )
             except:
                 pass
             
@@ -449,7 +449,7 @@ class ExperimentValidationBySimilarity:
             if( len(eligibility) > 0 ):
                 md['eligibility'] = eligibility
             if( len(ethnicity) > 0 ):
-                md['ethnicity'] = ethnicity
+                md['ethinicity'] = ethnicity
             if( len(condition) > 0 ):
                 md['condition'] = condition
             if( len(location) > 0 ):
