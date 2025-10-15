@@ -4,6 +4,7 @@ import sys
 import json
 import pickle
 import optuna
+import shutil
 import pandas as pd
 import Levenshtein
 from tqdm import tqdm
@@ -80,10 +81,10 @@ class SimilarityMetricOptimization:
             os.system(f"tar xzf {processed_goldds} -C {self.out}")
 
         # Uncompress the json files regarding the NCBI clinical trials raw data
-        self.out_ct_processed = os.path.join( fout, "processed_cts" ) 
-        if( not os.path.exists(self.out_ct_processed) ):
-            processed_cts_compressed = os.path.join(root_path, "supplementary_scripts", "processed_cts.tar.gz")
-            os.system(f"tar xzf {processed_cts_compressed} -C {self.out}")
+        self.ctlib = os.path.join( fout, "ctlib.json" ) 
+        if( not os.path.exists(self.ctlib) ):
+            ctlibPath = os.path.join(root_path, "supplementary_scripts", "ctlib.json")
+            shutil.copy(ctlibPath, self.ctlib)
 
         self.fout = os.path.join(fout, 'optimization')
         if( not os.path.isdir( self.fout ) ) :
@@ -131,17 +132,12 @@ class SimilarityMetricOptimization:
                                     g.write( line+'\n' )
 
     def __load_cts_library(self, allids):
-        pathout = os.path.join(self.out, 'ctlib.json')
+        pathout = self.ctlib
         dat = {}
         if( os.path.isfile(pathout) ):
             dat = json.load( open(pathout,'r') )
         else:
-            for _id in allids:
-                path = os.path.join( self.out_ct_processed, f"proc_ct_{_id}.json" )
-                if( os.path.isfile(path) ):
-                    dat[_id] = json.load( open(path, 'r') )
-
-            json.dump( dat, open(pathout,'w') )
+            raise Exception("CTlib was not correctly copied")
 
         return dat, pathout
 
@@ -192,6 +188,7 @@ class SimilarityMetricOptimization:
 
         res = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
         gone = set()
+        '''
         if( os.path.isfile(res) ):
             df = pd.read_csv( res, sep='\t' )
             for i in tqdm(df.index):
@@ -203,9 +200,10 @@ class SimilarityMetricOptimization:
                 line = f"{ctid}\t{pmid}\t{test_label}\t{test_text}"
                 gone.add(line)
         else:
-            f = open(res, 'w')
-            f.write("ctid\tpmid\ttest_label\tfound_ct_label\ttest_text\tfound_ct_text\tscore\n")
-            f.close()
+            '''
+        f = open(res, 'w')
+        f.write("ctid\tpmid\ttest_label\tfound_ct_label\ttest_text\tfound_ct_text\tscore\n")
+        f.close()
 
         print('Skipped', len(gone))
         print('cts available', len(cts_available) )
@@ -358,7 +356,7 @@ class SimilarityMetricOptimization:
 
     def run(self):
         self.perform_validation_gold()
-        self.check_best_string_sim_metric()
+        #self.check_best_string_sim_metric()
         self.get_coverage_gold_ctapi()
 
 if( __name__ == "__main__" ):
