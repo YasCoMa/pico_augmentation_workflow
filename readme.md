@@ -11,7 +11,6 @@ Nextflow workflow to perform automatic dataset augmention of a specific set of n
 
 We have developed a workflow with two main modules: (1.1) Acquire/Process up to date completed CTs raw data and validate the presence of the main information required for the entities validation; (1.2) Gather/process pubmed abstracts directly linked  in the raw CT structured files; (2) Validation by confronting and testing pairwise similarity between the prediction annotations per PICO-domain entity from NER Fair workflow output and the items extracted for each entity in the clinical trial associated with the respective pubmed ID. At the end, it generates the table with the similarity scores for the annotations and also a folder containing \*.ann and \*.txt ready to serve as input to the NER Fair workflow for training a new model.
 
-
 ## Requirements:
 * The packages are stated in the environment's exported file: environment.yml
 
