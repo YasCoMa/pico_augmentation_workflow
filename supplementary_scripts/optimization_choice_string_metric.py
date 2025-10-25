@@ -274,25 +274,6 @@ class SimilarityMetricOptimization:
                 pickle.dump(study.best_trial, file)
                 file.close()
 
-    def _aggregate_group_predictions(self, label_result):
-        path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
-        result_path = os.path.join( self.out, f'grouped_{label_result}_results_validation.tsv')
-        
-        if( not os.path.isfile(result_path) ):
-            rdf = pd.read_csv( path, sep='\t')
-            rdf = rdf[ ['ctid', 'pmid','test_label','test_text', 'score'] ]
-            rdf['val'] = [ float(s.split('-')[0]) for s in rdf['score'] ]
-            rdf = rdf.drop('score', axis=1)
-            rdf = rdf.groupby(['ctid', 'pmid','test_label','test_text']).max().reset_index()
-
-            result_path = os.path.join( self.out, f'grouped_{label_result}_results_validation.tsv')
-            rdf.to_csv( result_path, sep='\t', index=None )
-        else:
-            rdf = pd.read_csv( result_path, sep='\t')
-
-        rdf = rdf[ rdf['val'] >= 0.8 ]
-        return rdf
-
     def get_coverage_gold_ctapi(self):
         # Perform analysis of coverage and summarizes the optimization results in a boxplot
         opath = f"{self.fout}/by_similarity_best_params.pkl"
@@ -300,14 +281,13 @@ class SimilarityMetricOptimization:
         bmetric = bmetric.params['metric']
 
         label_result = "fast_gold"
-        self._aggregate_group_predictions(label_result)
 
         path = os.path.join( self.out, f'{label_result}_results_test_validation.tsv')
         df = pd.read_csv( path, sep='\t')
         print("Number of CTs:", len(df.ctid.unique()) ) # 117
         print("Number of PMIDs:", len(df.pmid.unique()) ) # 129
 
-        # transform results
+        # transforming results
         scores_nyes = []
         scores_nno = []
         entities = []
@@ -332,17 +312,20 @@ class SimilarityMetricOptimization:
         df['score_without_norm'] = scores_nno
         df.to_csv( opath, sep='\t', index=None)
         
+        # grouping the results leaving only the best similarity value for each annotation candidate
         opath = os.path.join( self.fout, f'grouped_{label_result}_{bmetric}_results_validation.tsv')
         df = df[ ['ctid', 'pmid', 'test_text', 'test_label', 'score_with_norm', 'score_without_norm'] ]
         df = df.groupby( ['ctid', 'pmid', 'test_text', 'test_label'] ).max().reset_index()
         df.to_csv( opath, sep='\t', index=None)
         
+        # plotting the distribution of similarity values (boxplot + data points) with normalization using the best metric found by the optimization
         df = df[ ['test_label', 'score_with_norm'] ]
         df.columns = ["Entity", f"{ bmetric.capitalize() } similarity"]
         fig = px.box(df, x="Entity", y=f"{ bmetric.capitalize() } similarity", points="all")
         opath = os.path.join(self.fout, f'{bmetric}_gold_grouped_distribution_scoresim.png')
         fig.write_image( opath )
 
+        # plotting the distribution of similarity values (only boxplot) with their comparison with and without string normalization
         subdf = pd.DataFrame()
         subdf["Entity"] = entities * 2
         subdf[ f"{ bmetric.capitalize() } similarity" ] = scores_nyes + scores_nno
@@ -356,7 +339,7 @@ class SimilarityMetricOptimization:
 
     def run(self):
         self.perform_validation_gold()
-        #self.check_best_string_sim_metric()
+        self.check_best_string_sim_metric()
         self.get_coverage_gold_ctapi()
 
 if( __name__ == "__main__" ):
